@@ -9,9 +9,6 @@ function BuildCity () {
     TOWER1.setPosition(24, 221)
     MFalc = sprites.create(assets.image`Falcon`, SpriteKind.ship)
     MFalc.setPosition(77, 240)
-    TFighter = sprites.create(assets.image`TIE`, SpriteKind.enemyship)
-    TFighter.setStayInScreen(true)
-    TFighter.setVelocity(100, 100)
     Traveler = sprites.create(assets.image`wookiel`, SpriteKind.Player)
     Traveler.setPosition(40, 232)
     Traveler.setStayInScreen(true)
@@ -21,14 +18,22 @@ function BuildCity () {
     tiles.setCurrentTilemap(tilemap`TwinSpires`)
     effects.clouds.startScreenEffect()
 }
+controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
+    mkTIE()
+})
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     Traveler.setImage(assets.image`wookiel`)
 })
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     Traveler.setImage(assets.image`wookier`)
 })
-let Traveler: Sprite = null
+function mkTIE () {
+    TFighter = sprites.create(assets.image`TIE`, SpriteKind.enemyship)
+    TFighter.setVelocity(50, 0)
+    TFighter.setBounceOnWall(true)
+}
 let TFighter: Sprite = null
+let Traveler: Sprite = null
 let MFalc: Sprite = null
 let TOWER1: Sprite = null
 BuildCity()
