@@ -22,19 +22,46 @@ function BuildCity () {
     effects.clouds.startScreenEffect()
 }
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (state == "walk" && Traveler.overlapsWith(MFalc)) {
-        MFalc.destroy()
-        Traveler.setImage(assets.image`FalconRight`)
+    if (state == "walk" && Traveler.overlapsWith(xw)) {
+        xw.destroy()
+        setSkin("xwing")
         state = "fly"
     } else {
-        if (state == "fly") {
-            MFalc = sprites.create(assets.image`Falcon`, SpriteKind.ship)
-            MFalc.setVelocity(0, 100)
-            MFalc.setPosition(Traveler.x, Traveler.y)
-            state = "walk"
+        if (state == "walk" && Traveler.overlapsWith(MFalc)) {
+            MFalc.destroy()
+            setSkin("falcon")
+            state = "fly"
+        } else {
+            if (state == "fly") {
+                if (figure == "falcon") {
+                    MFalc = sprites.create(assets.image`Falcon`, SpriteKind.ship)
+                    MFalc.setVelocity(0, 100)
+                    MFalc.setPosition(Traveler.x, Traveler.y)
+                    state = "walk"
+                } else {
+                    xw = sprites.create(assets.image`xwing`, SpriteKind.ship)
+                    xw.setVelocity(0, 100)
+                    xw.setPosition(Traveler.x, Traveler.y)
+                    state = "walk"
+                }
+            }
         }
     }
 })
+function setSkin (text: string) {
+    if (text == "wookie") {
+        Traveler.setImage(assets.image`wookier`)
+        figure = "wookie"
+    }
+    if (text == "falcon") {
+        Traveler.setImage(assets.image`FalconRight`)
+        figure = "falcon"
+    }
+    if (text == "xwing") {
+        Traveler.setImage(assets.image`xwingR`)
+        figure = "xwing"
+    }
+}
 function setTraveler (text: string) {
     if (text == "wookie") {
         Traveler.setImage(assets.image`wookier`)
@@ -48,7 +75,11 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
         Traveler.setImage(assets.image`wookiel`)
     }
     if (state == "fly") {
-        Traveler.setImage(assets.image`FalconLeft`)
+        if (figure == "falcon") {
+            Traveler.setImage(assets.image`FalconLeft`)
+        } else {
+            Traveler.setImage(assets.image`xwingL`)
+        }
     }
 })
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -56,7 +87,11 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
         Traveler.setImage(assets.image`wookier`)
     }
     if (state == "fly") {
-        Traveler.setImage(assets.image`FalconRight`)
+        if (figure == "falcon") {
+            Traveler.setImage(assets.image`FalconRight`)
+        } else {
+            Traveler.setImage(assets.image`xwingR`)
+        }
     }
 })
 function mkTIE () {
@@ -78,6 +113,8 @@ let MFalc: Sprite = null
 let xw: Sprite = null
 let TOWER1: Sprite = null
 let state = ""
+let figure = ""
+figure = "wookie"
 BuildCity()
 state = "walk"
 forever(function () {
