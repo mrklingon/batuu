@@ -6,6 +6,8 @@ namespace SpriteKind {
 function BuildCity () {
     scene.setBackgroundColor(9)
     TOWER1 = sprites.create(assets.image`Tower`, SpriteKind.Building)
+    xw = sprites.create(assets.image`xwing`, SpriteKind.ship)
+    xw.setPosition(400, 221)
     TOWER1.setPosition(24, 221)
     MFalc = sprites.create(assets.image`Falcon`, SpriteKind.ship)
     MFalc.setPosition(77, 240)
@@ -13,6 +15,7 @@ function BuildCity () {
     Traveler.setPosition(40, 232)
     Traveler.setStayInScreen(true)
     Traveler.setVelocity(0, 100)
+    xw.setVelocity(0, 100)
     scene.cameraFollowSprite(Traveler)
     controller.moveSprite(Traveler)
     tiles.setCurrentTilemap(tilemap`TwinSpires`)
@@ -28,11 +31,18 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
             MFalc = sprites.create(assets.image`Falcon`, SpriteKind.ship)
             MFalc.setVelocity(0, 100)
             MFalc.setPosition(Traveler.x, Traveler.y)
-            Traveler.setImage(assets.image`wookier`)
             state = "walk"
         }
     }
 })
+function setTraveler (text: string) {
+    if (text == "wookie") {
+        Traveler.setImage(assets.image`wookier`)
+    }
+    if (text == "falcon") {
+        Traveler.setImage(assets.image`FalconRight`)
+    }
+}
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     if (state == "walk") {
         Traveler.setImage(assets.image`wookiel`)
@@ -65,6 +75,7 @@ sprites.onOverlap(SpriteKind.enemyship, SpriteKind.Player, function (sprite, oth
 let TFighter: Sprite = null
 let Traveler: Sprite = null
 let MFalc: Sprite = null
+let xw: Sprite = null
 let TOWER1: Sprite = null
 let state = ""
 BuildCity()
