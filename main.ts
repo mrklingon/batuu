@@ -70,6 +70,13 @@ function setTraveler (text: string) {
         Traveler.setImage(assets.image`FalconRight`)
     }
 }
+controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (state == "fly") {
+        music.pewPew.play()
+        projectile = sprites.createProjectileFromSprite(assets.image`blast`, Traveler, 500 * dir, 0)
+        projectile.setFlag(SpriteFlag.AutoDestroy, true)
+    }
+})
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     if (state == "walk") {
         Traveler.setImage(assets.image`wookiel`)
@@ -81,6 +88,7 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
             Traveler.setImage(assets.image`xwingL`)
         }
     }
+    dir = -1
 })
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     if (state == "walk") {
@@ -93,6 +101,14 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
             Traveler.setImage(assets.image`xwingR`)
         }
     }
+    dir = 1
+})
+sprites.onOverlap(SpriteKind.enemyship, SpriteKind.Projectile, function (sprite, otherSprite) {
+    sprite.destroy(effects.fire, 500)
+    otherSprite.destroy(effects.fire, 500)
+    scene.cameraShake(4, 500)
+    music.knock.play()
+    info.changeScoreBy(randint(10, 50))
 })
 function mkTIE () {
     TFighter = sprites.create(assets.image`TIE`, SpriteKind.enemyship)
@@ -106,22 +122,27 @@ sprites.onOverlap(SpriteKind.enemyship, SpriteKind.Player, function (sprite, oth
     scene.cameraShake(4, 500)
     music.knock.play()
     info.changeScoreBy(randint(10, 50))
+    info.changeLifeBy(-1)
 })
 let TFighter: Sprite = null
+let projectile: Sprite = null
 let Traveler: Sprite = null
 let MFalc: Sprite = null
 let xw: Sprite = null
 let TOWER1: Sprite = null
+let dir = 0
 let state = ""
 let figure = ""
 figure = "wookie"
 BuildCity()
 state = "walk"
+dir = 1
+info.setLife(10)
 forever(function () {
     Traveler.setVelocity(0, 100)
 })
 forever(function () {
-    pause(5000)
+    pause(2000)
     if (7 < randint(0, 10)) {
         mkTIE()
     }
