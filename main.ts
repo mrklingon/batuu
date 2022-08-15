@@ -2,6 +2,7 @@ namespace SpriteKind {
     export const Building = SpriteKind.create()
     export const ship = SpriteKind.create()
     export const enemyship = SpriteKind.create()
+    export const populace = SpriteKind.create()
 }
 function BuildCity () {
     scene.setBackgroundColor(9)
@@ -109,6 +110,7 @@ sprites.onOverlap(SpriteKind.enemyship, SpriteKind.Projectile, function (sprite,
     scene.cameraShake(4, 500)
     music.knock.play()
     info.changeScoreBy(randint(10, 50))
+    numties += -1
 })
 function mkTIE () {
     TFighter = sprites.create(assets.image`TIE`, SpriteKind.enemyship)
@@ -123,13 +125,24 @@ sprites.onOverlap(SpriteKind.enemyship, SpriteKind.Player, function (sprite, oth
     music.knock.play()
     info.changeScoreBy(randint(10, 50))
     info.changeLifeBy(-1)
+    numties += -1
 })
+function mkpop () {
+    person = sprites.create(people[randint(0, 5)], SpriteKind.populace)
+    person.setPosition(500, 250)
+    person.setVelocity(0, 1000)
+    pause(1000)
+    person.setVelocity(randint(-50, 50), 0)
+    person.setBounceOnWall(true)
+}
+let person: Sprite = null
 let TFighter: Sprite = null
 let projectile: Sprite = null
 let Traveler: Sprite = null
 let MFalc: Sprite = null
 let xw: Sprite = null
 let TOWER1: Sprite = null
+let people: Image[] = []
 let dir = 0
 let state = ""
 let figure = ""
@@ -137,13 +150,34 @@ figure = "wookie"
 BuildCity()
 state = "walk"
 dir = 1
+people = [
+assets.image`person1`,
+assets.image`droid1`,
+assets.image`droid0`,
+assets.image`droid2`,
+assets.image`person2`,
+assets.image`person0`
+]
 info.setLife(10)
+let maxties = 7
+let numties = 0
+let maxpeeps = 7
+let numpeeps = 0
+mkpop()
+forever(function () {
+    pause(randint(500, 3000))
+    if (numpeeps < maxpeeps && 7 < randint(0, 10)) {
+        mkpop()
+        numpeeps += 1
+    }
+})
 forever(function () {
     Traveler.setVelocity(0, 100)
 })
 forever(function () {
-    pause(2000)
-    if (7 < randint(0, 10)) {
+    pause(randint(500, 3000))
+    if (numties < maxties && 7 < randint(0, 10)) {
+        numties += 1
         mkTIE()
     }
 })
