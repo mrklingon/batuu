@@ -22,33 +22,6 @@ function BuildCity () {
     tiles.setCurrentTilemap(tilemap`TwinSpires`)
     effects.clouds.startScreenEffect()
 }
-controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (state == "walk" && Traveler.overlapsWith(xw)) {
-        xw.destroy()
-        setSkin("xwing")
-        state = "fly"
-    } else {
-        if (state == "walk" && Traveler.overlapsWith(MFalc)) {
-            MFalc.destroy()
-            setSkin("falcon")
-            state = "fly"
-        } else {
-            if (state == "fly") {
-                if (figure == "falcon") {
-                    MFalc = sprites.create(assets.image`Falcon`, SpriteKind.ship)
-                    MFalc.setVelocity(0, 100)
-                    MFalc.setPosition(Traveler.x, Traveler.y)
-                    state = "walk"
-                } else {
-                    xw = sprites.create(assets.image`xwing`, SpriteKind.ship)
-                    xw.setVelocity(0, 100)
-                    xw.setPosition(Traveler.x, Traveler.y)
-                    state = "walk"
-                }
-            }
-        }
-    }
-})
 function setSkin (text: string) {
     if (text == "wookie") {
         Traveler.setImage(assets.image`wookier`)
@@ -66,9 +39,6 @@ function setSkin (text: string) {
 function setTraveler (text: string) {
     if (text == "wookie") {
         Traveler.setImage(assets.image`wookier`)
-    }
-    if (text == "falcon") {
-        Traveler.setImage(assets.image`FalconRight`)
     }
 }
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -112,6 +82,36 @@ sprites.onOverlap(SpriteKind.enemyship, SpriteKind.Projectile, function (sprite,
     info.changeScoreBy(randint(10, 50))
     numties += -1
 })
+controller.B.onEvent(ControllerButtonEvent.Released, function () {
+    if (state == "walk") {
+        if (state == "walk" && Traveler.overlapsWith(xw)) {
+            xw.destroy()
+            setSkin("xwing")
+            state = "fly"
+        }
+        if (state == "walk" && Traveler.overlapsWith(MFalc)) {
+            MFalc.destroy()
+            setSkin("falcon")
+            state = "fly"
+        }
+    } else {
+        if (state == "fly") {
+            if (figure == "falcon") {
+                setSkin("wookie")
+                MFalc = sprites.create(assets.image`Falcon`, SpriteKind.ship)
+                MFalc.setVelocity(0, 70)
+                MFalc.setPosition(Traveler.x, Traveler.y)
+                state = "walk"
+            } else {
+                setSkin("wookie")
+                xw = sprites.create(assets.image`xwing`, SpriteKind.ship)
+                xw.setVelocity(0, 70)
+                xw.setPosition(Traveler.x, Traveler.y)
+                state = "walk"
+            }
+        }
+    }
+})
 function mkTIE () {
     TFighter = sprites.create(assets.image`TIE`, SpriteKind.enemyship)
     TFighter.setVelocity(randint(-50, 50), 0)
@@ -146,6 +146,8 @@ let people: Image[] = []
 let dir = 0
 let state = ""
 let figure = ""
+game.splash("Navigate Galaxy's Edge,", "Fly spaceships,")
+game.splash("Shoot down First Order TIEs!")
 figure = "wookie"
 BuildCity()
 state = "walk"
