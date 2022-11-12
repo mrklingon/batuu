@@ -83,31 +83,33 @@ sprites.onOverlap(SpriteKind.enemyship, SpriteKind.Projectile, function (sprite,
     numties += -1
 })
 controller.B.onEvent(ControllerButtonEvent.Released, function () {
-    if (state == "walk") {
-        if (state == "walk" && Traveler.overlapsWith(xw)) {
-            xw.destroy()
-            setSkin("xwing")
-            state = "fly"
-        }
-        if (state == "walk" && Traveler.overlapsWith(MFalc)) {
-            MFalc.destroy()
-            setSkin("falcon")
-            state = "fly"
-        }
-    } else {
-        if (state == "fly") {
-            if (figure == "falcon") {
-                setSkin("wookie")
-                MFalc = sprites.create(assets.image`Falcon`, SpriteKind.ship)
-                MFalc.setVelocity(0, 70)
-                MFalc.setPosition(Traveler.x, Traveler.y)
-                state = "walk"
-            } else {
-                setSkin("wookie")
-                xw = sprites.create(assets.image`xwing`, SpriteKind.ship)
-                xw.setVelocity(0, 70)
-                xw.setPosition(Traveler.x, Traveler.y)
-                state = "walk"
+    if (Traveler.y > 200) {
+        if (state == "walk") {
+            if (state == "walk" && Traveler.overlapsWith(xw)) {
+                xw.destroy()
+                setSkin("xwing")
+                state = "fly"
+            }
+            if (state == "walk" && Traveler.overlapsWith(MFalc)) {
+                MFalc.destroy()
+                setSkin("falcon")
+                state = "fly"
+            }
+        } else {
+            if (state == "fly") {
+                if (figure == "falcon") {
+                    setSkin("wookie")
+                    MFalc = sprites.create(assets.image`Falcon`, SpriteKind.ship)
+                    MFalc.setVelocity(0, 70)
+                    MFalc.setPosition(Traveler.x, Traveler.y)
+                    state = "walk"
+                } else {
+                    setSkin("wookie")
+                    xw = sprites.create(assets.image`xwing`, SpriteKind.ship)
+                    xw.setVelocity(0, 70)
+                    xw.setPosition(Traveler.x, Traveler.y)
+                    state = "walk"
+                }
             }
         }
     }
@@ -163,9 +165,14 @@ assets.image`person0`
 info.setLife(10)
 let maxties = 7
 let numties = 0
-let maxpeeps = 7
+let maxpeeps = 10
 let numpeeps = 0
 mkpop()
+forever(function () {
+    if (state == "walk" && Traveler.y < 230) {
+        Traveler.y = 230
+    }
+})
 forever(function () {
     pause(randint(500, 3000))
     if (numpeeps < maxpeeps && 7 < randint(0, 10)) {
